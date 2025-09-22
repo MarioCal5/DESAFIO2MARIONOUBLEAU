@@ -1,0 +1,164 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace SISTEMADEGEATIÓNAUTONOMAVEHICULAR
+{
+
+    
+
+    public class TRANSPORTEVEHICULAR
+    {
+        
+       
+    //usaremos esto porque queremos asignar y modificar valores
+       public string Marca { get; set; }
+        public string ModeloTransporte { get; set; }
+        public int Año { get; set; }
+        public int Velocidad { get; set; }
+
+
+
+        public TRANSPORTEVEHICULAR(string Marca, string ModeloTransporte, int Año)
+        {
+            //aqui ocupamos this porque estamos asignando el atributo a una clase, no a otra variable 
+            this.Marca = Marca;
+            this.ModeloTransporte = ModeloTransporte;
+            this.Año = Año;
+            this.Velocidad = 0;
+
+        }
+        //ahora inicializamos estos metodos que pues serán virtuales porque se van a sobreescribir en clases hijas haciendo uso de override
+        public virtual void Encender()
+        {
+            Console.WriteLine($"{Marca} {ModeloTransporte} ({Año}) se ha encendido recientemente.");
+        }
+
+        public virtual void Acelerar()
+        {
+            Velocidad += 10;
+            Console.WriteLine($"{Marca} {ModeloTransporte} aceleró a {Velocidad} km/h.");
+        }
+
+        public virtual void Detener()
+        {
+            Velocidad = 0;
+            Console.WriteLine($"{Marca} {ModeloTransporte} se acaba de detener.");
+
+        }
+
+        public TRANSPORTEVEHICULAR AsignacionMarcas(string marca)
+        {
+            //usamos el this en metodo de asignacion en este caso, para eso asignamos previamente Asignaciondemarcas
+            this.Marca = marca;
+            return this;
+        }
+        public override string ToString()
+        {
+            //override nos va a servir para implementar un nuevo método una nueva implementación
+            return $"{Marca} {ModeloTransporte} ({Año}) - Velocidad: {Velocidad} km/h";
+
+        }
+
+    }
+    //aqui aplicamos herencia porque la clase hija es AutoElectrico y su clase padre es TRANSPORTEVEHICULAR
+    public class AutoElectrico : TRANSPORTEVEHICULAR
+    {
+        //aqui estamos asignando y llamando las clases en base a nuestras clases previas
+        public AutoElectrico(string marca, string ModeloTransporte, int año)
+            : base(marca, ModeloTransporte, año) { }
+
+        //ahora ocupamos override para un método de implementación de clase por ejemplo su encendido
+        public override void Encender()
+        {
+            Console.WriteLine($"-*-*-*-{Marca} {ModeloTransporte} el auto es eléctrico y se encendió silenciosamente-*-*-*-*-*");
+        }
+        //ahora con este override aceleramos rápidamente
+        public override void Acelerar()
+        {
+            Velocidad += 20;
+            Console.WriteLine($"-*-*-*-{Marca} {ModeloTransporte} aceleró rápidamente a {Velocidad} km/h (eléctrico)-*-*-*-*-*-*-*");
+        }
+    }
+
+    // lo mismo con el Auto de Gasolina
+    public class AutoGasolina : TRANSPORTEVEHICULAR
+    {
+        public AutoGasolina(string marca, string modelo, int año)
+            : base(marca, modelo, año) { }
+
+        public override void Encender()
+        {
+            Console.WriteLine($"-*-*-*-{Marca} {ModeloTransporte} encendió fuertemente.-*-*-*-*");
+        }
+
+        public override void Acelerar()
+        {
+            Velocidad += 15;
+            Console.WriteLine($"-*-*-*-*{Marca} {ModeloTransporte} en este caso su aceleración fue {Velocidad} km/h .-*-*-*-*");
+        }
+    }
+    //  Auto autónomo:Un auto autónomo es un vehículo capaz de conducir sin intervención humana,
+    //  usando sistemas informáticos, sensores, cámaras y algoritmos de inteligencia artificial para percibir su entorno,
+    //  tomar decisiones y controlar el movimiento.
+    //  Estos vehículos utilizan tecnologías como lidar, radar, GPS y software avanzado para navegar
+    //  y operar de forma segura, replicando las habilidades de un conductor humano. 
+    public class AutoAutonomo : TRANSPORTEVEHICULAR
+    {
+        public AutoAutonomo(string marca, string modelo, int año)
+            : base(marca, modelo, año) { }
+
+        public override void Encender()
+        {
+            Console.WriteLine($"-*-*-*-*{Marca} {ModeloTransporte} inició el sistema autónomo.-*-*-*-*");
+        }
+
+        public override void Acelerar()
+        {
+            Velocidad += 25;
+            Console.WriteLine($"-*-*-*-{Marca} {ModeloTransporte} ajustó su velocidad a {Velocidad} km/h.-*-*-*-*");
+        }
+
+        public override void Detener()
+        {
+            Velocidad = 0;
+            Console.WriteLine($"-*-*-*-*{Marca} {ModeloTransporte} se detuvo automáticamente por seguridad.-*-*-*-*-*");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Crear flota de vehículos
+            TRANSPORTEVEHICULAR[] TRANSPORTE = new TRANSPORTEVEHICULAR[3];
+            TRANSPORTE[0] = new AutoElectrico("Renault", "5 E-Tech", 2024);
+            TRANSPORTE[1] = new AutoGasolina("Nissan", "Versa", 2015);
+            TRANSPORTE[2] = new AutoAutonomo("Citroën C5 X", "One", 2025);
+
+            Console.WriteLine("=== Reporte de Transportes ===\n");
+
+            foreach (TRANSPORTEVEHICULAR v in TRANSPORTE)
+            {
+                v.Encender();
+                v.Acelerar();
+                v.Acelerar();
+                v.Detener();
+                Console.WriteLine(v.ToString());
+                Console.WriteLine("--------------------------");
+            }
+
+            // Ejemplo de uso de this en asignación
+            TRANSPORTE[1].AsignacionMarcas("Nissan");
+            Console.WriteLine($"Marca reasignada con this: {TRANSPORTE[1]}");
+
+
+            Console.ReadKey();
+
+        }
+    }
+}
